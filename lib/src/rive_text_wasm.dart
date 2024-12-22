@@ -730,7 +730,7 @@ Future<bool> initFont() async {
           ? 'http://localhost:8282/release/$source'
           : isRelative
               ? source
-              : 'https://cdn.jsdelivr.net/npm/@rive-app/flutter-wasm@$wasmVersion/build/bin/release/$source'
+              : 'assets/packages/rive/wasm/js/$source'
       ..type = 'application/javascript'
       ..defer = true;
 
@@ -753,25 +753,6 @@ Future<bool> initFont() async {
     return completer.future;
   }
 
-  var env = const String.fromEnvironment(
-    'RIVE_ENVIRONMENT',
-    defaultValue: 'unknown',
-  );
-
-  if (env != 'unknown' &&
-      defaultTargetPlatform != TargetPlatform.iOS &&
-      defaultTargetPlatform != TargetPlatform.android) {
-    // Try threaded version.
-    if (await _loadWasm('rive_text.js?v=DEPLOYMENTVERSION', 'RiveText',
-        isRelative: true)) {
-      return true;
-    }
-  }
-
-  // Try simd version.
-  if (await _loadWasm('simd/rive_text.js', 'RiveText')) {
-    return true;
-  }
   // Try non-simd version.
   if (await _loadWasm('rive_text.js', 'RiveTextNoSimd')) {
     return true;
